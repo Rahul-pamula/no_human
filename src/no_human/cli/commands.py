@@ -3476,6 +3476,7 @@ def docs_generate(repo):
     repo_path = str(Path(repo).resolve())
     from ..agent.backend import make_backend
     from ..profile import ProjectProfile
+    from ..docs_gen import WikiGenerator
 
     async def _go():
         backend = make_backend(
@@ -7836,7 +7837,6 @@ def bench_run(full, limit, gate, prev_path, label, specs_dir, resume, parallel,
     config, _ = _bootstrap()
 
     def backend_factory(_spec):
-        from ..agent.backend import make_backend
         return make_backend(
             model=config.primary_model,
             config=config.data,

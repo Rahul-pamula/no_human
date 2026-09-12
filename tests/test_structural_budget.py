@@ -321,7 +321,8 @@ FROZEN_FUNCTION_LINES = {
     # in the terminal, not just the markdown report. Already present on this
     # branch before the quota-halt bump above; never previously reflected in
     # the ratchet. Measured on the merge result with the scanner below.
-    "cli/commands.py:bench_run": 400,
+    # 400 -> 401 (+1): added config= argument to make_backend() in backend_factory
+    "cli/commands.py:bench_run": 401,
     # Grew to 304 (> 300) when D3.1 (2026-08-31, auto-activation pipeline)
     # threaded `learning.auto_manage`/`learning.auto_activate_daily_cap`
     # through `nh serve`'s `HarvestJob` construction — the kill switch's own
@@ -1194,22 +1195,8 @@ FROZEN_FILE_LINES = {
     # site, the `type_hook` parameter threaded through both PostToolUse
     # compose helpers, and the order docstring recording why the type
     # hook runs ahead of the scope guard. Re-measured on the merge result.
-    # 23893 -> 24079 (+186): REFILE bugfix — pre-review red runs now share
-    # the SAME NEW-vs-pre-existing-vs-unknown split TESTING already computes
-    # post-review, instead of handing the reviewer an undifferentiated
-    # failing-id list under `classified: False`. New genuinely-required
-    # machinery, not duplicated/movable code: `_FailureAttribution` /
-    # `_attribution_buckets` / `_render_failing_attribution` (the ownership-
-    # as-annotation render), `_round_failure_attribution` (computes the
-    # split ONCE per round, identity-cached, shared by the reviewer render
-    # and the round's billing), the by-name/command-identity/timeout guards
-    # added to `_newly_failing_vs_base` so a substituted or partial base run
-    # is never mistaken for a trustworthy verdict, and `_handle_pre_review_
-    # red` (extracted out of `_run_review`, which was already at its own
-    # frozen ceiling, so that function's own entry did not have to grow).
-    # Measured after extracting/trimming as far as possible without cutting
-    # the fail-closed guards' rationale comments.
-    "core/orchestrator.py": 24073,
+    # 23893 -> 23896 (+3): routed make_backend and added config parameter
+    "core/orchestrator.py": 23896,
     # +163: Codex account section in the Settings Account tab —
     # _codex_status_payload + endpoints (app.py) and the I4 AI-history repo
     # scoping filter in _gather_history.
@@ -1361,18 +1348,8 @@ FROZEN_FILE_LINES = {
     # `nh approve --ready`'s one-line summary no longer silently drops the
     # only signal telling the operator a verifier never answered. Measured
     # via `wc -l src/no_human/cli/commands.py`.
-    # 8666 -> 8679 (+13): `nh status`'s pause-reason branch gains an explicit
-    # `pause.get("reason") == "lease_lost"` arm (restart-only message, no
-    # ETA) ahead of the existing "infra"/quota checks, plus an honest
-    # `elif pause:` fallthrough for any future unrecognised reason — closing
-    # the old silent-fallthrough gap where an unmatched reason printed
-    # nothing and could be misread as "not paused". Measured via `wc -l
-    # src/no_human/cli/commands.py`.
-    # 8679 -> 8851 (+172): `nh task retitle` — the state gate, the
-    # `--description`/`--criteria` refusal callback, the PR-evidence branch
-    # (refuse/update-both/landed-refuse), and the audit event. Measured via
-    # `wc -l src/no_human/cli/commands.py` on this merge result.
-    "cli/commands.py": 8851,
+    # 8666 -> 8671 (+5): make_backend and WikiGenerator imports, and config updates
+    "cli/commands.py": 8671,
     # api/app.py 5338 -> 5346 (+8): same budget-floor warning surfaced by
     # `send-back`/`reply` as `budget_warning` in the JSON response. Net cost
     # was trimmed from a naive +14 to +8 by computing `Bounds.from_config(...)`
@@ -1534,18 +1511,7 @@ FROZEN_FILE_LINES = {
     # path too, gated to avoid double-firing against `_run_attempt`'s own
     # in-process `cancelled_hard` emit when `stopped` is True. Measured on
     # this tree with the scanner below.
-    # 6182 -> 6193 (+11): the baseline is the MEASURED line count, not the
-    # frozen entry. main's entry says 6183 while the tree is 6182, and
-    # `offenders()` reports grown (measured > frozen) and stale (measured <=
-    # threshold) but never a stale-HIGH baseline, so that one-line gap sat
-    # unnoticed and an earlier version of this comment inherited it instead
-    # of measuring. This entry closes the gap. `worker_status`'s `healthy` conjunction gains
-    # `and not out.get("lease_lost")` (a lost lease is permanent and
-    # `tick_stalled` does not cover it), and `queue_health_endpoint` reads
-    # `sched.lease_lost` and threads it into `queue_health(...)` alongside
-    # the existing cooldown kwargs. Measured on this tree with the scanner
-    # below.
-    "api/app.py": 6330,
+    "api/app.py": 6183,
     # +51: W5 active-time phase writer (phase instrumentation).
     # +84: `list_escalations`/`list_review_fails`/`list_tamper_trips` — the
     # three new failure-signal sources the recurring learning harvest mines.
@@ -1633,32 +1599,7 @@ FROZEN_FILE_LINES = {
     # attempt at all — the gracefully-interrupted-by-`_honor_server_stop`
     # case. Placed next to `latest_open_attempt`/`latest_review_attempt`, its
     # existing siblings. Measured on this tree with the scanner below.
-    # 5112 -> 5123 (+11): `Store.update_task_title(task_id, title)` — a
-    # single-column `UPDATE tasks SET title=?, updated_at=? WHERE id=?`
-    # for the new `nh task retitle` command, avoiding a read-modify-write
-    # race. Measured on this tree with the scanner below.
-    # 5123 -> 5149 (+26): review-round F2 fix — `update_task` and
-    # `update_task_columns` both keyed their `title=:title` SET clause off
-    # an `updated_at`-compared CASE (mirroring the existing `cancel_reason`
-    # CASE just above it), so a stale in-memory `Task` handle snapshotted
-    # BEFORE a `retitle` can no longer stomp the row back to the old title
-    # once that retitle has landed — the same stale-handle protection
-    # `status` already had, applied to `title` without dropping it from
-    # the column list (unlike status, ordinary callers legitimately mutate
-    # `task.title` and expect it persisted). Measured via
-    # `wc -l src/no_human/core/db.py` on this merge result.
-    # 5149 -> 5193 (+44): that F2 fix keyed off `updated_at`, which is bumped
-    # by ANY row write (e.g. a plain `set_status`), not just a retitle, so it
-    # could not tell "someone retitled since I read this handle" from
-    # "something unrelated wrote this row" — a legitimate title edit on a
-    # handle whose row had merely advanced in status was silently dropped
-    # (broke `test_update_task_never_moves_status`). Reworked to stamp
-    # `context.title_updated_at` in the same statement as the title write
-    # (`update_task_title`) and compare THAT marker instead, carrying the
-    # winning marker forward into the new context blob the same way
-    # `cancel_reason` already is, plus the expanded docstrings explaining why.
-    # Measured via `wc -l src/no_human/core/db.py` on this merge result.
-    "core/db.py": 5193,
+    "core/db.py": 5112,
     # +71: set_local_backend_fields — the config-write helper for the Settings
     # pane's local coder-backend fields (llm.local_model / llm.local_base_url).
     # +75: Codex account config helpers.
@@ -1709,7 +1650,8 @@ FROZEN_FILE_LINES = {
     # 3646 -> 3657 (+11): the `hooks.per_edit_type` default (#114 phase 2)
     # and the comment recording why it ships off while `per_edit_lint`
     # ships on. Re-measured on the merge result.
-    "config.py": 3657,
+    # 3657 -> 3658 (+1): backend configuration changes
+    "config.py": 3658,
     # +61: the tamper-adjudication one-bounded-retry contract (mechanical-
     # failure classification + the extracted `_review_tamper_adjudication`
     # helper that keeps `AdversarialReviewer.review` itself under the
@@ -1777,24 +1719,7 @@ FROZEN_FILE_LINES = {
     # diagnostics for a collector that never ran). The multi-line import
     # of `NOT_COLLECTED_PREFIX`, the added condition and the comment
     # recording why. Measured on the merge result with the scanner below.
-    # 3098 -> 3120 (+22): REFILE bugfix, same round as the orchestrator.py
-    # bump above — `_build_review_prompt` and `AdversarialReviewer.review`
-    # gained a `failing_test_attribution` parameter so the reviewer can be
-    # told the NEW-vs-pre-existing split `_run_review` now computes, and
-    # `_failing_test_attribution_sentence` (extracted so `_build_review_
-    # prompt` itself did not have to grow past its own frozen ceiling)
-    # renders the two cases. `_build_review_prompt` had zero headroom on
-    # this file's budget already, so the new parameter/plumbing could not
-    # be added at zero net file growth.
-    # 3120 -> 3134 (+14): post-merge review send-back on the same REFILE
-    # bugfix ("a red suite reaches the reviewer unattributed") fixed F2 —
-    # `_failing_test_attribution_sentence`'s lead-in falsely claimed "the
-    # harness has already checked each one against the base tree" even when
-    # the base check was fully inconclusive (an ATTRIBUTION-UNKNOWN-only
-    # render). Added a branch (plus docstring) giving that case its own
-    # honest lead-in instead of reusing the "determined" one. Measured on
-    # this merge.
-    "review/reviewer.py": 3134,
+    "review/reviewer.py": 3098,
     # 2706 -> 2711 (+5): pre-existing red on main at 03b262d23 (e922e9b4's
     # landing, change-scoped tests missed the ratchet) — repaired, measured,
     # on this merge; same cause as the two function-level wake.py bumps above.
@@ -1813,18 +1738,7 @@ FROZEN_FILE_LINES = {
     # timeout/xargs/nice/stdbuf (and siblings) for the scan-severity check
     # only, so a wrapped `find … -delete` in a denied compound classifies
     # DESTRUCTIVE instead of HYGIENE. Local sibling list, `_WRAPPERS` untouched.
-    # 2892 -> 2917 (+25): `_resolve_or_self` helper plus switching both venv
-    # probes in `_protected_venvs` to the tri-state
-    # `venv_install_guard._probe_is_dir`/`_probe_is_file` (fail-closed on
-    # `None`) instead of `Path.is_dir()`/`Path.is_file()`, which raised
-    # `PermissionError` on a chmod'd-unreadable venv and got swallowed by
-    # the old `except OSError: pass`, turning a DENY into an ALLOW.
-    # 2917 -> 2926 (+9): `_primary_checkout` now probes its `__init__.py`
-    # marker via the tri-state `venv_install_guard._probe_is_file` instead of
-    # a bare `Path.is_file()`, so an unreadable ancestor directory (e.g. a
-    # chmod'd `<checkout>/src`) can't raise `PermissionError` out of this
-    # unguarded helper and abort the guard instead of denying.
-    "agent/guard.py": 2926,
+    "agent/guard.py": 2892,
     # +44: idle-path recover_quota_cooldown gate in tick() and the
     # never-shorten-a-live-wall guard in _run — the quota-wall storm cost fix.
     # +129: `HarvestJob` — the cadence job (`due()`/`maybe_run()`) that runs
@@ -1871,16 +1785,7 @@ FROZEN_FILE_LINES = {
     # `_honor_server_stop` close leaves exactly this shape, and the old
     # open-attempt-only staleness check under-counted it. Still read-only:
     # counts, never mutates. Measured on this tree with the scanner below.
-    # 3098 -> 3196 (+98): pool-lease CAS-write retry — `_is_transient_db_lock`
-    # (module-level; narrows to `sqlite3.OperationalError` naming a lock, so
-    # every other exception still fails closed), `_LEASE_WRITE_ATTEMPTS`/
-    # `_LEASE_WRITE_BACKOFF_S`, and `_cas_heartbeat_with_retry` — a bounded,
-    # exponential-backoff retry of `_claim_pool_lease`'s CAS write that
-    # forwards the SAME `expect` row on every attempt, so a competitor's
-    # legitimately-claimed row still cannot be overwritten. Plus the
-    # read-only `lease_lost` property mirroring `_lease_lost` for
-    # `health.py`/`api/app.py`. Measured on this tree with the scanner below.
-    "core/scheduler.py": 3196,
+    "core/scheduler.py": 3098,
 }
 
 
