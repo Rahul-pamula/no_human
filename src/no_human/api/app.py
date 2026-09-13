@@ -6136,6 +6136,7 @@ async def onboarding_docs_generate(
         try:
             backend = make_backend(
                 model=config.primary_model,
+                backend="claude",
                 config=config.data,
                 forbidden_paths=config["safety"]["forbidden_paths"],
             )

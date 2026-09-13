@@ -3481,6 +3481,7 @@ def docs_generate(repo):
     async def _go():
         backend = make_backend(
             model=config.primary_model,
+            backend="claude",
             config=config.data,
             forbidden_paths=config["safety"]["forbidden_paths"],
         )
@@ -6853,6 +6854,12 @@ def doctor(verbose, verify_auth, fix_walks, dry_run):
                 f"CODEX CONFIG INVALID: {crow['error']}"
             )
 
+        from ..config import permission_mode, AuthError
+        try:
+            permission_mode(config.data)
+        except AuthError as exc:
+            d.contradictions.append(f"PERMISSION MODE INVALID: {exc}")
+
         # The gap presence-checking cannot close: a valid-SHAPED but expired or
         # revoked credential passes everything above and dies at the first task
         # (walkthrough B5). Opt-in, because the rule that doctor never spends
@@ -7505,6 +7512,7 @@ def eval_cmd(prev_path, out_path, gate):
     def backend_factory(_golden):
         return make_backend(
             model=config.primary_model,
+            backend="claude",
             config=config.data,
             forbidden_paths=config["safety"]["forbidden_paths"],
             never_push_to=config["git"]["never_push_to"],
@@ -7839,6 +7847,7 @@ def bench_run(full, limit, gate, prev_path, label, specs_dir, resume, parallel,
     def backend_factory(_spec):
         return make_backend(
             model=config.primary_model,
+            backend="claude",
             config=config.data,
             forbidden_paths=config["safety"]["forbidden_paths"],
             never_push_to=config["git"]["never_push_to"],
@@ -8784,6 +8793,7 @@ def shadow_cmd(title, repo, criteria):
 
     backend = make_backend(
         model=config.primary_model,
+        backend="claude",
         config=config.data,
         forbidden_paths=config["safety"]["forbidden_paths"],
         never_push_to=config["git"]["never_push_to"],

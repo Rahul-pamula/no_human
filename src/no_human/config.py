@@ -2846,7 +2846,6 @@ def load_config(
     merged = _deep_merge(DEFAULT_CONFIG, user_data)
     merged.pop("tracker", None)  # ignore any stale block from an old config
     _reject_decomposition_enabled(merged)
-    permission_mode(merged)
     return Config(data=merged, path=config_path)
 
 

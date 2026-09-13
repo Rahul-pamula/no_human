@@ -322,7 +322,8 @@ FROZEN_FUNCTION_LINES = {
     # branch before the quota-halt bump above; never previously reflected in
     # the ratchet. Measured on the merge result with the scanner below.
     # 400 -> 401 (+1): added config= argument to make_backend() in backend_factory
-    "cli/commands.py:bench_run": 401,
+    # 401 -> 402 (+1): added backend="claude" to make_backend()
+    "cli/commands.py:bench_run": 402,
     # Grew to 304 (> 300) when D3.1 (2026-08-31, auto-activation pipeline)
     # threaded `learning.auto_manage`/`learning.auto_activate_daily_cap`
     # through `nh serve`'s `HarvestJob` construction — the kill switch's own
@@ -1195,7 +1196,7 @@ FROZEN_FILE_LINES = {
     # site, the `type_hook` parameter threaded through both PostToolUse
     # compose helpers, and the order docstring recording why the type
     # hook runs ahead of the scope guard. Re-measured on the merge result.
-    # 23893 -> 23896 (+3): routed make_backend and added config parameter
+    # 23893 -> 23896 (+3): replaced bypassPermissions with permission_mode(config_data) helper
     "core/orchestrator.py": 23896,
     # +163: Codex account section in the Settings Account tab —
     # _codex_status_payload + endpoints (app.py) and the I4 AI-history repo
@@ -1349,7 +1350,8 @@ FROZEN_FILE_LINES = {
     # only signal telling the operator a verifier never answered. Measured
     # via `wc -l src/no_human/cli/commands.py`.
     # 8666 -> 8671 (+5): make_backend and WikiGenerator imports, and config updates
-    "cli/commands.py": 8671,
+    # 8671 -> 8681 (+10): added backend="claude" and try/except in doctor
+    "cli/commands.py": 8681,
     # api/app.py 5338 -> 5346 (+8): same budget-floor warning surfaced by
     # `send-back`/`reply` as `budget_warning` in the JSON response. Net cost
     # was trimmed from a naive +14 to +8 by computing `Bounds.from_config(...)`
@@ -1510,8 +1512,9 @@ FROZEN_FILE_LINES = {
     # so `task_ended(outcome=cancelled)` fires for THIS out-of-process cancel
     # path too, gated to avoid double-firing against `_run_attempt`'s own
     # in-process `cancelled_hard` emit when `stopped` is True. Measured on
-    # this tree with the scanner below.
-    "api/app.py": 6183,
+    # 6179 -> 6183 (+4): 21.2 #119 phase 2
+    # 6183 -> 6184 (+1): added backend="claude" in onboarding_docs_generate
+    "api/app.py": 6184,
     # +51: W5 active-time phase writer (phase instrumentation).
     # +84: `list_escalations`/`list_review_fails`/`list_tamper_trips` — the
     # three new failure-signal sources the recurring learning harvest mines.

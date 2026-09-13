@@ -249,7 +249,7 @@ async def verify_credential_live(*, model: str, profile: str | None = None,
 
     try:
         result = await asyncio.wait_for(
-            make_backend(model=model, readonly=True, config=config_data).run(
+            make_backend(model=model, backend="claude", readonly=True, config=config_data).run(
                 _PROBE_PROMPT, cwd=Path.cwd(), max_turns=1, effort="low"),
             timeout=timeout_s,
         )
