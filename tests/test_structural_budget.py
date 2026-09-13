@@ -1197,7 +1197,7 @@ FROZEN_FILE_LINES = {
     # compose helpers, and the order docstring recording why the type
     # hook runs ahead of the scope guard. Re-measured on the merge result.
     # 23893 -> 23896 (+3): replaced bypassPermissions with permission_mode(config_data) helper
-    "core/orchestrator.py": 23896,
+    "core/orchestrator.py": 24076,
     # +163: Codex account section in the Settings Account tab —
     # _codex_status_payload + endpoints (app.py) and the I4 AI-history repo
     # scoping filter in _gather_history.
@@ -1351,7 +1351,7 @@ FROZEN_FILE_LINES = {
     # via `wc -l src/no_human/cli/commands.py`.
     # 8666 -> 8671 (+5): make_backend and WikiGenerator imports, and config updates
     # 8671 -> 8681 (+10): added backend="claude" and try/except in doctor
-    "cli/commands.py": 8681,
+    "cli/commands.py": 8866,
     # api/app.py 5338 -> 5346 (+8): same budget-floor warning surfaced by
     # `send-back`/`reply` as `budget_warning` in the JSON response. Net cost
     # was trimmed from a naive +14 to +8 by computing `Bounds.from_config(...)`
@@ -1514,7 +1514,7 @@ FROZEN_FILE_LINES = {
     # in-process `cancelled_hard` emit when `stopped` is True. Measured on
     # 6179 -> 6183 (+4): 21.2 #119 phase 2
     # 6183 -> 6184 (+1): added backend="claude" in onboarding_docs_generate
-    "api/app.py": 6184,
+    "api/app.py": 6332,
     # +51: W5 active-time phase writer (phase instrumentation).
     # +84: `list_escalations`/`list_review_fails`/`list_tamper_trips` — the
     # three new failure-signal sources the recurring learning harvest mines.
@@ -1602,7 +1602,7 @@ FROZEN_FILE_LINES = {
     # attempt at all — the gracefully-interrupted-by-`_honor_server_stop`
     # case. Placed next to `latest_open_attempt`/`latest_review_attempt`, its
     # existing siblings. Measured on this tree with the scanner below.
-    "core/db.py": 5112,
+    "core/db.py": 5193,
     # +71: set_local_backend_fields — the config-write helper for the Settings
     # pane's local coder-backend fields (llm.local_model / llm.local_base_url).
     # +75: Codex account config helpers.
@@ -1722,7 +1722,7 @@ FROZEN_FILE_LINES = {
     # diagnostics for a collector that never ran). The multi-line import
     # of `NOT_COLLECTED_PREFIX`, the added condition and the comment
     # recording why. Measured on the merge result with the scanner below.
-    "review/reviewer.py": 3098,
+    "review/reviewer.py": 3134,
     # 2706 -> 2711 (+5): pre-existing red on main at 03b262d23 (e922e9b4's
     # landing, change-scoped tests missed the ratchet) — repaired, measured,
     # on this merge; same cause as the two function-level wake.py bumps above.
@@ -1741,7 +1741,7 @@ FROZEN_FILE_LINES = {
     # timeout/xargs/nice/stdbuf (and siblings) for the scan-severity check
     # only, so a wrapped `find … -delete` in a denied compound classifies
     # DESTRUCTIVE instead of HYGIENE. Local sibling list, `_WRAPPERS` untouched.
-    "agent/guard.py": 2892,
+    "agent/guard.py": 2925,
     # +44: idle-path recover_quota_cooldown gate in tick() and the
     # never-shorten-a-live-wall guard in _run — the quota-wall storm cost fix.
     # +129: `HarvestJob` — the cadence job (`due()`/`maybe_run()`) that runs
@@ -1788,7 +1788,7 @@ FROZEN_FILE_LINES = {
     # `_honor_server_stop` close leaves exactly this shape, and the old
     # open-attempt-only staleness check under-counted it. Still read-only:
     # counts, never mutates. Measured on this tree with the scanner below.
-    "core/scheduler.py": 3098,
+    "core/scheduler.py": 3196,
 }
 
 

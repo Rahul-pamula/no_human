@@ -162,11 +162,11 @@ named here.
   and line and quote the lines they are about. Same destination as the push.
 - **PR receipt and status polling** — `gh` / `glab` calls for the PR's head SHA
   and its mergeability (`vcs/pr_watcher.py:default_pr_state`, `vcs/receipts.py`), plus
-  `git fetch origin` (`vcs/git.py:GitRepo._have_remote_commit:1020`, `:GitRepo.fetch:1354`),
+  `git fetch origin` (`vcs/git.py:GitRepo._have_remote_commit:1177`, `:GitRepo.fetch:1513`),
   while a task waits on CI or review.
   These read; they send only the identifiers of a PR you just created.
 - **`nh merge-stack run` calls `gh pr merge`** against your git host
-  (`cli/commands.py:merge_stack_run:2940`). This is *your* command, not the agent's — an agent
+  (`cli/commands.py:merge_stack_run:3112`). This is *your* command, not the agent's — an agent
   session's Bash is denied it for the spellings the rule models
   (`_LEXICAL_MERGE_STACK` in `agent/guard.py`, plus the argv check beside it),
   in both session modes; see §2 for the bound.
@@ -258,7 +258,7 @@ named here.
   and `CodexBackend._child_env()` — with an
   env-var mark that is inherited by every descendant of that session, no
   matter how it is invoked. `nh approve` and `nh merge-stack run`
-  (`_refuse_agent_gate_act`, `cli/commands.py:approve:5178`, `:merge_stack_run:2910`) refuse before
+  (`_refuse_agent_gate_act`, `cli/commands.py:approve:5363`, `:merge_stack_run:3082`) refuse before
   `_bootstrap` runs when the calling process carries that mark, and an HTTP
   middleware in `api/app.py` (`_refuse_marked_gate_acts`, by `_csp_header`)
   refuses
